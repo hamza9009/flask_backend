@@ -2610,6 +2610,62 @@ def add_wound_details_v3():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+
+
+
+
+from flask import Flask, jsonify
+import mysql.connector
+import os
+
+app = Flask(__name__)
+
+# Database Configuration
+DB_HOST = "smartheal-database.cz6gu0ygodof.ap-southeast-2.rds.amazonaws.com"
+DB_PORT = 3306
+DB_USER = "admin"
+DB_PASSWORD = "smartheal_db_connection"
+# smartheal_db_connection
+DB_NAME = "smartheal-database"
+
+
+# Function to connect to RDS
+def connect_db():
+    try:
+        connection = mysql.connector.connect(
+            host=DB_HOST,
+            user=DB_USER,
+            password=DB_PASSWORD,
+            database=DB_NAME,
+            port=DB_PORT
+        )
+        return connection
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        return None
+
+@app.route("/")
+def index():
+    return jsonify({"message": "Flask API is running!"})
+
+@app.route("/test-db")
+def test_db():
+    connection = connect_db()
+    print(connection)
+    if not connection:
+        return jsonify({"error": "Failed to connect to database"}), 500
+
+    try:
+        cursor = connection.cursor()
+        cursor.execute("SHOW TABLES")
+        tables = cursor.fetchall()
+        cursor.close()
+        connection.close()
+        return jsonify({"tables": [table[0] for table in tables]})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/uploads/assessed_wounds/<patient_id>/<filename>')
 def assessed_wound_uploaded_file(patient_id, filename):
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER'], 'assessed_wounds', patient_id), filename)
