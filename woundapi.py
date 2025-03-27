@@ -2654,6 +2654,7 @@ def test_db():
     connection = connect_db()
     print(connection)
     if not connection:
+        print(connection.error())
         return jsonify({"error": "Failed to connect to database"}), 500
 
     try:
