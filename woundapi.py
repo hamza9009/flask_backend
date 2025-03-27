@@ -2627,7 +2627,8 @@ DB_PORT = 3306
 DB_USER = "admin"
 DB_PASSWORD = "smartheal_db_connection"
 # smartheal_db_connection
-DB_NAME = "smartheal-database"
+# DB_NAME = "smartheal-database"
+DB_NAME = "smartheal_db"
 
 
 # Function to connect to RDS
